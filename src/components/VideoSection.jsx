@@ -2,6 +2,7 @@ import React, { useEffect, useState } from 'react'
 import img from "../assets/play_video.jpg"
 import { Fancybox } from "@fancyapps/ui";
 import "@fancyapps/ui/dist/fancybox/fancybox.css";
+import { API_URL } from '../stor';
 
 function VideoSection() {
  
@@ -16,8 +17,8 @@ function VideoSection() {
 
   return (
 
-    <section style={{backgroundImage:`url(${img})`}} className='h-[80vh] bg-no-repeat mt-20 relative bg-gray-900 bg-center lg:p-24 p-4 grid items-center justify-center'>
-        <a href="https://youtu.be/qUFyj6mMCZ0?si=KXMre1Ly5NPIcL0Z" data-fancybox="video-gallery" style={{
+    <section style={{backgroundImage:`url(${API_URL+"other-images/IMG_6499.JPG"})`}} className='h-[80vh] bg-no-repeat mt-20 relative bg-gray-900 bg-center lg:px-24 py-14 p-4 grid items-center justify-center'>
+        <a href="https://youtu.be/N7TrG0eRyls?si=owbj5l1Qg1VscNPv" data-fancybox="video-gallery" style={{
           }} className='rounded-full z-20 transition-transform duration-75 h-20 w-20 border border-white text-center grid items-center justify-center text-white'>PLAY
         
         </a>

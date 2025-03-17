@@ -3,7 +3,7 @@ import CountUp from 'react-countup'
 
 function AchiveNumber() {
   return (
-    <section className='lg:p-24 p-4 flex lg:justify-between flex-wrap'>
+    <section className='lg:px-24 py-14 p-4 flex lg:justify-between flex-wrap'>
         <NumberCard/>
         <NumberCard/>
         <NumberCard/>

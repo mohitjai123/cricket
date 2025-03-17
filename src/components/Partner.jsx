@@ -14,7 +14,7 @@ function Partner() {
       fetchData()
   }, [])
   return (
-    <section className='bg-grayScale grid max-md:grid-cols-1 max-lg:grid-cols-4 grid-cols-4 gap-4 lg:p-24 p-4'>
+    <section className='bg-grayScale grid max-md:grid-cols-1 max-lg:grid-cols-4 grid-cols-4 gap-4 lg:px-24 py-14 p-4'>
 
         {data.map((item,idx)=>
         <motion.div initial={{opacity:0, y:100}} whileInView={{opacity:1, y:0}} transition={{duration:0.8, delay:idx-(0.8*idx)}} className='bg-white border border-gray-400'>

@@ -6,6 +6,7 @@ import { doc, getDoc } from 'firebase/firestore'
 import { convertDateToFormate } from '../utils/convertTimeStamp'
 import { Fancybox } from "@fancyapps/ui";
 import "@fancyapps/ui/dist/fancybox/fancybox.css";
+import { API_URL } from '../stor'
 
 function MatchDetails() {
     const {name} = useParams()
@@ -38,17 +39,17 @@ function MatchDetails() {
   }, []);
   return (
     <section>
-        <BreadCamp name={"Matches"} second={"Spin Vs Punjab Kings"}/>
-        <div className='lg:p-24 bg-grayScale p-4'>
-        <div className='bg-white items-center flex justify-between w-1/2 gap-4 px-10 mx-auto py-7 text-center'>
+        <BreadCamp img={API_URL+"other-images/IMG_4721.JPG"} name={"Matches"} second={"Spin Vs Punjab Kings"}/>
+        <div className='lg:px-24 py-14 bg-grayScale p-4'>
+        <div className='bg-white items-center flex justify-between lg:w-1/2 gap-4 px-10 mx-auto py-7 text-center'>
        <div>
        <img className='h-20 mx-auto' src={data?.teamA?.logo} alt="" />
        <h3>{data?.teamA?.name}</h3>
        </div>
     
         <div>
-          <h3>{convertDateToFormate(data?.date)}</h3>
-          <h2 className='text-4xl my-3 font-semibold'>{data?.score}</h2>
+          <h3 className='max-lg:w-20'>{convertDateToFormate(data?.date)}</h3>
+          <h2 className='lg:text-4xl my-3 font-semibold'>{data?.score}</h2>
           <h3>{data?.location}</h3>
         </div>
         <div>

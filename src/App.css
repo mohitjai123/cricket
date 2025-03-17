@@ -32,31 +32,6 @@ body{
   font-family: 'Times New Roman', Times, serif;
 }
 
-.slick-track{
-  transform: translate3d(0px, 0px ,0px) !important;
-}
-
-
-.slick-dots li button {
-  width: 12px;
-  height: 12px;
-  border-radius: 50%;
-  background-color: gray;
-  border: none;
-  color:#BF9745 !important;
-}
-
-
-.slick-dots{
-  bottom: 20px!important;
-}
-
-.slick-dots li.slick-active button::before {
-  width: 16px;
-  color: #BF9745!important;          /* Active dot size */
-  height: 16px;
-}
-
 html,body{
   scroll-behavior: smooth;
 }
@@ -77,6 +52,23 @@ input[type="number"]::-webkit-inner-spin-button{
   background-color: #0481B2;
   color: white;
 }
+
+@keyframes pingLogo {
+  0%{
+    background-color: #0481B2;
+  }
+  50%{
+    background-color: #C70F05;
+  }
+  100%{
+    background-color: #0481B2;
+  }
+}
+
+.animate-btn{
+  animation: pingLogo linear 1.5s infinite;
+}
+
 .table-section::-webkit-scrollbar{
   height: 0px;
   width: 5px;

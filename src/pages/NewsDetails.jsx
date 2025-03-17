@@ -1,31 +1,41 @@
 import React, { useEffect, useState } from 'react'
 import BreadCamp from '../components/BreadCamp'
 import { Link, useParams } from 'react-router-dom'
-import { collection, doc, getDoc, where } from 'firebase/firestore'
+import { collection, doc, getDoc, getDocs, where } from 'firebase/firestore'
 import { db } from '../firebaseConfig'
+import { API_URL } from '../stor'
 
 function NewsDetails() {
     const {name} = useParams()
     const [activeBlog, setActiveBlog] = useState()
+    const [otherBlog, setOtherBlog] = useState([])
     const fechBlogData = async()=>{
        try {
         const blogRef = doc(db, "news", name)
         const blog = await getDoc(blogRef)
         setActiveBlog(blog.data())
+        await getOtherBlog(blog.data().category)
         console.log(blog.data());
         
        } catch (error) {
         
        }
     }
+    const getOtherBlog =async(category)=>{
+        const newsQuery = query(collection(db, "news"), where("category", "==", category));
+        const short = await getDocs(newsQuery)
+        const data = short.docs.map(item=>({id:item.id,...item.data()}))
+        setOtherBlog(data)
+        console.log(data);
+    }
     useEffect(()=>{
         fechBlogData()
     },[])
   return (
     <section>
-        <BreadCamp name={"News"}/>
-
-        <div className='flex bg-gray-100 gap-4 p-4 lg:p-24'>
+        <BreadCamp img={API_URL+"other-images/IMG_4722.JPG"} name={"News"}/>
+        
+        <div className='flex bg-gray-100 gap-4 p-4 lg:px-24 py-14'>
             <div className='h-2/3'>
                 <h3 className='uppercase w-fit h-fit bg-yellow-500 text-white px-5 py-1 rounded-full'>{activeBlog?.category}</h3>
                 <h2 className='text-4xl font-semibold my-5'>{activeBlog?.title}</h2>
@@ -43,13 +53,15 @@ function NewsDetails() {
                 <input className='outline-none' placeholder='Search...' type="search" />
                 </div>
                 <h3 className='text-xl my-4'>Recent Posts</h3>
-
+                {
+                    
+                }
                 <div className='lg:flex gap-5 items-center'>
                      <div className='h-fit overflow-hidden'>
                     <img className='h-[100px] w-[150px] max-w-full hover:scale-110 duration-500' src="https://spin.axiomthemes.com/wp-content/uploads/2023/10/post48-copyright-840x840.jpg" alt="" />
                     </div>
                     <div>
-            <p className='  my-2 lg:flex gap-2 text-sm items-center'><strong>TRANDING</strong> <div className='h-1 w-1 rounded-full bg-gray-500'></div> <span className='text-gray-500'> Sep 19, 2023</span></p>
+            <p className='  my-2 lg:flex gap-2 text-sm items-center'><strong></strong> <div className='h-1 w-1 rounded-full bg-gray-500'></div> <span className='text-gray-500'> Sep 19, 2023</span></p>
                         <Link to='/' className='text-lg hover:text-gray-500 duration-500 font-[500]'>Live cricket score of IND vs PAK, ICC World Cup</Link>
                     </div>
                 </div>

@@ -1,13 +1,14 @@
 import React from 'react'
 import BreadCamp from '../components/BreadCamp'
 import { useParams } from 'react-router-dom'
+import { API_URL } from '../stor'
 
 function PlayerDetails() {
     const { name } = useParams()
     return (
         <section>
-            <BreadCamp name="Teams" second={name.split("-").join(" ")} />
-            <div className='p-4 flex flex-wrap gap-12 items-center justify-center bg-gray-200 lg:p-24'>
+            <BreadCamp img={API_URL+"other-images/IMG_4783.JPG"} name="Teams" second={name.split("-").join(" ")} />
+            <div className='p-4 flex flex-wrap gap-12 items-center justify-center bg-gray-200 lg:px-24 py-14'>
                 <div className='border border-white'>
                     <img className='h-96' src="https://documents.iplt20.com/ipl/IPLHeadshot2024/57.png" alt="" />
                     <div className='bg-white/50 border border-white py-2 text-center'>

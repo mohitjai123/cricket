@@ -1,44 +1,21 @@
-import React from 'react'
-import first from "../assets/teams/Dynamic Daredevils Logo.png"
-import second from "../assets/teams/Gujarat Rising Stars logo.png"
-import third from "../assets/teams/Nawab legends logo.png"
-import four from "../assets/teams/Rajasthan warriors logo.png"
-import five from "../assets/teams/Tiger maratha logo.png"
-import six from "../assets/teams/TUlu Thunders Logo.png"
+import React, { useEffect, useState } from 'react'
+import { API_URL } from '../stor'
+import { collection, getDocs } from 'firebase/firestore';
+import { db } from '../firebaseConfig';
 
 function PointTable() {
-    const data = [
-        {
-            logo:first,
-            name:"Dynamic Daredevils"
-        },
-        {
-            logo:second,
-            name:"Gujarat Rising Stars"
-        }
-        ,
-        {
-            logo:third,
-            name:"Nawab legends"
-        }
-        ,
-        {
-            logo:four,
-            name:"Rajasthan warriors"
-        }
-        ,
-        {
-            logo:five,
-            name:"Tiger maratha"
-        }
-        ,
-        {
-            logo:six,
-            name:"TUlu Thunders"
-        }
-    ]
+    const [data, setData] = useState([])
+    const fetchData = async () => {
+        const newsQuery = collection(db, "PremierLeague");
+        const queryShot = await getDocs(newsQuery)
+        const docs = queryShot.docs.map((item) => ({ ...item.data() }))
+        setData(docs)
+    }
+    useEffect(() => {
+        fetchData()
+    }, [])
   return (
-    <section className='lg:px-24 max-lg:max-w-full grid pb-20'>
+    <section  className='lg:px-24 max-lg:max-w-full grid'>
          <h3 className='text-center font-semibold'>TABLE</h3>
         <h2 className='lg:text-6xl text-3xl mb-7 text-center font-semibold'>Premier league</h2>
         <div>
@@ -54,20 +31,20 @@ function PointTable() {
                 <h2 className='p-5 lg:w-1/6 text-center font-semibold border'>L</h2>
                 <h2 className='p-5 lg:w-1/6 text-center font-semibold border'>P</h2>
             </div>
-            {data.map((item, idx)=>
+            {data?.map((item, idx)=>
             <div key={idx} className='border-collapse hover:bg-cyan-50 duration-500 bg-white flex'>
             <h2 className='py-5 text-center w-1/6 lg:w-[5.5rem] text-gray-500 border'>{idx+1}</h2>
             <div className='p-5 lg:w-1/2 w-1/4 lg:flex gap-4 items-center text-secondary hover:font-semibold duration-500 border'><img className='h-8' src={item.logo} alt="" />
-                <h4>{item.name}</h4>
+                <h4>{item.teamName}</h4>
             </div>
-            <h2 className='p-5 lg:w-1/6 text-center text-gray-500 border'>{idx+3}</h2>
-            <h2 className='p-5 lg:w-1/6 text-center text-gray-500 border'>{idx+10}</h2>
-            <h2 className='p-5 lg:w-1/6 text-center text-gray-500 border'>{10-idx}</h2>
-            <h2 className='p-5 lg:w-1/6 text-center text-gray-500 border'>{idx+12}</h2>
+            <h2 className='p-5 lg:w-1/6 text-center text-gray-500 border'>{item.ennings}</h2>
+            <h2 className='p-5 lg:w-1/6 text-center text-gray-500 border'>{item.winings}</h2>
+            <h2 className='p-5 lg:w-1/6 text-center text-gray-500 border'>{item.loss}</h2>
+            <h2 className='p-5 lg:w-1/6 text-center text-gray-500 border'>{item.points}</h2>
         </div>
             )}
         </div>
-        <button className='mx-auto text-white bg-secondary mt-8 py-3 px-5 rounded-full hover:bg-blue-600 duration-500 w-fit'>VIEW FULL TABLE</button>
+        {/* <button className='mx-auto text-white bg-secondary mt-8 py-3 px-5 rounded-full hover:bg-blue-600 duration-500 w-fit'>VIEW FULL TABLE</button> */}
     </section>
   )
 }

@@ -6,6 +6,7 @@ import { db } from '../firebaseConfig'
 import CountdownTimer from '../utils/CountDownTimer'
 import BreadCamp from '../components/BreadCamp'
 import { convertDateToFormate } from '../utils/convertTimeStamp'
+import { API_URL } from '../stor'
 
 function MatchSection() {
   const [data, setData] = useState([])
@@ -41,9 +42,10 @@ function MatchSection() {
   }, [])
   return (
     <main>
-      <BreadCamp name={"Matches"} second={"Past Matches"}/>
+      {/* <B/readCamp img={API_URL+"other-images/IMG_6487.JPG"} name={"Matches"} second={"Past Matches"}/> */}
+      <h4 className='text-2xl mt-5 text-white font-bold lg:mx-24 text-center border-t-8 border-secondary py-3 bg-primary'> Past Matches</h4>
 
-<section className='p-24 grid bg-gray-50 md:grid-cols-2 grid-cols-1 place-items-center gap-4 lg:grid-cols-3'>
+<section className='lg:px-24 py-14 p-3 grid bg-gray-50 md:grid-cols-2 grid-cols-1 place-items-center gap-4 lg:grid-cols-3'>
     {data.map((item,idx)=>
        <motion.div key={idx} className='relative w-full' initial={{y:100, opacity:0}} whileInView={{y:0, opacity:1}} transition={{ delay: idx-(0.8*idx), duration:0.6}}>
         <CricketMatchCard item={item}/>
@@ -94,7 +96,9 @@ function MatchSection() {
           📍 Venue: {item.venue}
         </div>
         {/* Action Button */}
-        <Link to={"/cricket/matches/"+item.id} className="px-6 py-2 bg-blue-600 text-white rounded-full font-semibold hover:bg-blue-700 transition">
+        <Link
+        //  to={"/matches/"+item.id} 
+         className="px-6 py-2 bg-blue-600 text-white rounded-full font-semibold hover:bg-blue-700 transition">
           View Details
         </Link>
       </div>

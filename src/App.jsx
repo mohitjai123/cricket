@@ -14,30 +14,41 @@ import NewsPage from './pages/NewsPage';
 import TrialPage from './pages/TrialPage';
 import MatchSection from './pages/MatchSection';
 import UpcomingMatches from './pages/UpcomingMatches';
+import PrivacyPolicy from './pages/PrivacyPolicy';
+import TermsCondition from './pages/TermsCondition';
+import RefundPolicy from './pages/RefundPolicy';
+import TrialRules from './pages/TrialsRulse';
+import { RecoilRoot } from 'recoil';
 
 function App() {
 
    return (
       <BrowserRouter>
+         <RecoilRoot>
          <Routes>
-            <Route path='/cricket/' element={<Layout />}>
-               <Route path='/cricket/' index element={<Home />} />
-               <Route path='/cricket/about' element={<About />} />
-               <Route path='/cricket/teams' element={<TeamSection />} />
-               <Route path='/cricket/photo-gallery' element={<GalleryPage />} />
-               <Route path='/cricket/video-gallery' element={<GalleryPage />} />
-               <Route path='/cricket/trial' element={<TrialPage />} />
-               <Route path='/cricket/news' element={<NewsPage />} />
-               <Route path='/cricket/teams/:name' element={<TeamDetails />} />
-               <Route path='/cricket/players/:name' element={<PlayerDetails />} />
-               <Route path='/cricket/matches/:name' element={<MatchDetails />} />
-               <Route path='/cricket/upcoming-matches/:name' element={<MatchDetails />} />
-               <Route path='/cricket/upcoming-matches/' element={<UpcomingMatches />} />
-               <Route path='/cricket/past-matches/' element={<MatchSection />} />
-               <Route path='/cricket/news/:name' element={<NewsDetails />} />
-               <Route path='/cricket/contact-us' element={<ContactUs />} />
+            <Route path='/' element={<Layout />}>
+               <Route path='/' index element={<Home />} />
+               <Route path='/about' element={<About />} />
+               <Route path='/teams' element={<TeamSection />} />
+               <Route path='/photo-gallery' element={<GalleryPage />} />
+               <Route path='/video-gallery' element={<GalleryPage />} />
+               <Route path='/trial' element={<TrialPage />} />
+               <Route path='/news' element={<NewsPage />} />
+               <Route path='/teams/:name' element={<TeamDetails />} />
+               <Route path='/players/:name' element={<PlayerDetails />} />
+               <Route path='/matches/:name' element={<MatchDetails />} />
+               <Route path='/upcoming-matches/:name' element={<MatchDetails />} />
+               <Route path='/upcoming-matches/' element={<UpcomingMatches />} />
+               <Route path='/past-matches/' element={<MatchSection />} />
+               <Route path='/news/:name' element={<NewsDetails />} />
+               <Route path='/contact-us' element={<ContactUs />} />
+               <Route path='/privacy-policy' element={<PrivacyPolicy />} />
+               <Route path='/terms-conditions' element={<TermsCondition />} />
+               <Route path='/refund-policy' element={<RefundPolicy />} />
+               <Route path='/trials-rules' element={<TrialRules />} />
             </Route>
          </Routes>
+         </RecoilRoot>
       </BrowserRouter>
    )
 }

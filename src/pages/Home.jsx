@@ -20,12 +20,14 @@ function Home() {
         {/* <TradingArticle/> */}
         <OurTradingTeams/>
         <PointTable/>
-        <Number/>
+        {/* <Number/> */}
         <VideoSection/>
-        <TeamMember/>
         <BlogsNews/>
-        <Partner/>
         <AboutSection/>
+        <TeamMember/>
+
+        <Partner/>
+
         <InstaNews/>
     </div>
   )

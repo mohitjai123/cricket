@@ -57,21 +57,7 @@ const FormSection =()=>{
   }
   }
 
-  async function handleFile(e) {
-    const file = e.target.files[0]
-    const form = new FormData()
-    form.append("image",file)
-    form.append("folder", "about")
-        try {
-      const res = await axios.post("https://mjpl.co.in/upload.php", form)
-      console.log(res);
-      
-    } catch (error) {
-      console.log(error);
-      
-    }
-    
-  }
+  
 
   return <section className='lg:flex py-20 gap-10 lg:px-24 px-3'>
         <div className='lg:w-1/2'>

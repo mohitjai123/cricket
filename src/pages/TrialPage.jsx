@@ -24,7 +24,7 @@ function TrialPage() {
                 <p>Cricket is a game of skill, strategy, and determination, and MJPL Premier League is committed to discovering and nurturing the next generation of cricketing talent. If you are an aspiring cricketer looking for a platform to prove yourself, this is your opportunity to step up and compete at the highest level. <br />
                 <br />
 
-                All amateur cricketer's who are interested in participating in the trial's will need to pay trail registration fee i.e Rs. 2499/- (GST included)<br /> <br />
+                All amateur cricketer's who are interested in participating in the trial will need to pay trial registration fee i.e Rs. 1999/- (GST included)<br /> <br />
 This is the sole fee due prior to the trials. Further Stage: No additional fees will be charged to the players. <br /> <br />
 Once selected, participants will be notified, via email, regarding all the details of the trial, such as the venue, dates and other instructions for the selection process.  <br />
 The selection process is designed to identify and nurture the best cricketing talent. It consists of three key phases:</p>

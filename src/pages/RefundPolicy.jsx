@@ -30,7 +30,7 @@ The participant must provide accurate banking details (if required) for successf
                 <h3 className='text-lg px-5 font-bold text-white bg-primary border-t-4 border-secondary py-3 mt-5'>4. Important Disclaimer</h3>
                 <p className='my-3 px-5'>
                 <b>Please note:</b> The registration fee is solely for the trials and has no connection with the league. <br />
-If, after the trials, the league is Cancelled due to any reason, Macjhons is not liable to pay anything to anyone, as the registration fee covers only the trials and not the league participation.
+If, after the trials, the league is Cancelled due to any reason, MacJhons is not liable to pay anything to anyone, as the registration fee covers only the trials and not the league participation.
 
                 </p>
                 <h3 className='text-lg px-5 font-bold text-white bg-primary border-t-4 border-secondary py-3 mt-5'>5. Organizer's Rights:</h3>

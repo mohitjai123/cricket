@@ -1,8 +1,7 @@
 import { Link } from "react-router-dom";
 
 export default function MultiNav({name="", option=[{name:"", url:""}], active=false}) {
-    console.log(window.location.pathname);
-     
+      
   return (
       <ul className="flex space-x-6">
         <li className="relative group">

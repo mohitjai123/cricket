@@ -19,7 +19,7 @@ function BlogsNews() {
     return (
         <section className='lg:px-24 py-14 p-4'>
             <h3 className='text-x text-center font-semibold'>NEWS</h3>
-            <h2 className='lg:text-6xl text-3xl mb-7 text-center font-semibold'>Lastest news</h2>
+            <h2 className='lg:text-6xl text-3xl mb-7 text-center font-semibold'>Latest News</h2>
             <div className='grid py-5 lg:grid-cols-3 gap-10'>
                 {data.slice(0,3).map((item,idx)=>
                    <Link className='cursor-pointer' to={'/news/'+item?.id} key={idx}>

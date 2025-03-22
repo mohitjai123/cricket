@@ -19,7 +19,7 @@ export default function TrialRules() {
                         </li>
                         <li className=''>4. Selection is based only on the player's skills shown during trials.
                         </li>
-                        <li className=''>5. Players must be between 16 to 40 years old to participate.
+                        <li className=''>5. Players must be between 16 to 45 years old to participate.
                         </li>
                         <li className=''>6. All players must bring their Aadhar Card and two passport-size photographs for verification.
                         </li>
@@ -36,46 +36,49 @@ export default function TrialRules() {
                         <li>10. Players must wear any cricket uniform and bring their own cricket kit for the trials.
 
                         </li>
-                        <li>11. Every player will get a fair chance to showcase their skills.
+                        <li>
+                        11. Trials will be conducted with a white cricket ball.
+                        </li>
+                        <li>12. Every player will get a fair chance to showcase their skills.
 
                         </li>
-                        <li>12. The selectors’ decision is final. No requests for re-evaluation will be accepted.
+                        <li>13. The selectors’ decision is final. No requests for re-evaluation will be accepted.
                         </li>
-                        <li>13. Selected players will be informed through call, email.
+                        <li>14. Selected players will be informed through call, email.
                         </li>
-                        <li>14. Any player giving false information will be disqualified.   
+                        <li>15. Any player giving false information will be disqualified.   
                         </li>
-                        <li>15. Players who perform well have a chance to get selected for the tournament.
+                        <li>16. Players who perform well have a chance to get selected for the tournament.
                         </li>
-                        <li>16. Selected players will receive training and guidance from expert coaches.
+                        <li>17. Selected players will receive training and guidance from expert coaches.
                         </li>
                       
                     </ul>
                     <h3 className='text-lg px-5 font-bold text-white bg-primary border-t-4 border-secondary py-3 mt-5'>Responsibilities & Important Information</h3>
                     <ul className='lg:px-8 mb-8 mt-3 grid gap-2'>
-                        <li>17. Players must pay for their own travel to and from the trial venue.
+                        <li>18. Players must pay for their own travel to and from the trial venue.
                         </li>
-                        <li>18. The organizers are not responsible for lost or damaged personal belongings.
+                        <li>19. The organizers are not responsible for lost or damaged personal belongings.
                         </li>
-                        <li>19. The organizers are not responsible for injuries, but first aid will be available at the venue.
+                        <li>20. The organizers are not responsible for injuries, but first aid will be available at the venue.
                         </li>
-                        <li>20. The organizers are not responsible for weather conditions, but necessary precautions will be taken.
+                        <li>21. The organizers are not responsible for weather conditions, but necessary precautions will be taken.
                         </li>
-                        <li>21. The organizers have the right to allow or deny entry at the venue.
+                        <li>22. The organizers have the right to allow or deny entry at the venue.
                         </li>
                         
                     </ul>
                     <h3 className='text-lg px-5 font-bold text-white bg-primary border-t-4 border-secondary py-3 mt-5'>Important Notice</h3>
                     <ul className='lg:px-8 mb-8 mt-3 grid gap-2'>
-                        <li>22. MJPL Cricket League is only open to Indian players for the year 2025.
+                        <li>23. MJPL Cricket League is only open to Indian players for the year 2025.
                         </li>
-                        <li>23. The tournament in UAE is completely free for selected players in their respective teams.
+                        <li>24. The tournament in UAE is completely free for selected players in their respective teams.
                         </li>
-                        <li>24. For any questions or doorstep registration assistance, call +91 7021612227
+                        <li>25. For any questions or doorstep registration assistance, call +91 7021612227
                         </li>
-                        <li>25. All disputes will be handled in Mumbai courts only.
+                        <li>26. All disputes will be handled in Mumbai courts only.
                         </li>
-                        <li>26. By registering, players agree to follow all rules and regulations of MJPL Premier League.
+                        <li>27. By registering, players agree to follow all rules and regulations of MJPL Premier League.
                         </li>
                         
                     </ul>

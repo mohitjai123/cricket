@@ -19,6 +19,10 @@ import TermsCondition from './pages/TermsCondition';
 import RefundPolicy from './pages/RefundPolicy';
 import TrialRules from './pages/TrialsRulse';
 import { RecoilRoot } from 'recoil';
+import Profile from './pages/Profile';
+import Notifications from './pages/Notifications';
+import Registration from './pages/Registration';
+import ChangePassword from './pages/ChangePassword';
 
 function App() {
 
@@ -46,6 +50,10 @@ function App() {
                <Route path='/terms-conditions' element={<TermsCondition />} />
                <Route path='/refund-policy' element={<RefundPolicy />} />
                <Route path='/trials-rules' element={<TrialRules />} />
+               <Route path='/profile' element={<Profile />} />
+               <Route path='/notifications' element={<Notifications />} />
+               <Route path='/registrations' element={<Registration />} />
+               <Route path='/change-password' element={<ChangePassword />} />
             </Route>
          </Routes>
          </RecoilRoot>

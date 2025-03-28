@@ -79,7 +79,7 @@ function TeamMember() {
     <section className='bg-primary text-white p-8 lg:px-28 py-10'>
  {/* <h3 className='text-x text-center font-semibold'>PLAYERS</h3> */}
         <h2 className='lg:text-6xl text-3xl mb-7 text-center font-semibold'>Our players</h2>
-        <div className='flex gap-10 mt-10 h-80 team-section overflow-auto'>
+        <div className='flex gap-10 mt-10 h-fit team-section overflow-y-hidden overflow-x-auto'>
            {players.map((item,idx)=>
              <div key={idx}>
              <div className='border relative p-5 h-64 w-52'>

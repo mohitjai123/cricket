@@ -1,6 +1,6 @@
 import React from 'react'
 
-function LabelInputBox({ disabled=false, placeholder = "", option = null, name = "", required = false, label, value, onChange, type = "text" }) {
+function LabelInputBox({ disabled=false, placeholder = "", option = null, name = "", required = true, label, value, onChange, type = "text" }) {
     return (
         <div className='relative w-full'>
             <div className='text-gray-600'>

@@ -1,20 +1,14 @@
 import React, { useRef, useEffect, useState } from "react";
 import { motion, useAnimation } from "framer-motion";
-import { collection, getDocs } from "firebase/firestore";
+import { collection, doc, getDoc, getDocs } from "firebase/firestore";
 import { db } from "../../firebaseConfig";
 import Carousel from "framer-motion-carousel";
-
-const AUTO_PLAY_SPEED = 3000; // Auto-play speed in milliseconds
-
 const MyCarousel = () => {
-  const carouselRef = useRef(null);
-  const controls = useAnimation();
-  const [currentIndex, setCurrentIndex] = useState(0);
   const [data, setData] = useState([])
     const fetchData = async () => {
         const newsQuery = collection(db, "testimonial");
         const queryShot = await getDocs(newsQuery)
-        const docs = queryShot.docs.map((item) => ({ ...item.data() }))
+        const docs = queryShot.docs.map((item) => ({ ...item.data() })) 
           setData(docs)
     }
     useEffect(() => {

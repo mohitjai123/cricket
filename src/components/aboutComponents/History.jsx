@@ -1,7 +1,18 @@
-import React from 'react'
+import React, { useEffect, useState } from 'react'
 import { API_URL } from '../../stor'
+import { doc, getDoc } from 'firebase/firestore'
+import { db } from '../../firebaseConfig'
 
 function History() {
+    const [banner, setbanner] = useState({})
+  const fetchData =async()=>{
+    const bannerQuery = doc(db, "aboutUs", "blog_images")
+    const shost = await getDoc(bannerQuery)
+    setbanner(shost.data())
+  }
+  useEffect(()=>{
+    fetchData()
+  },[])
   return (
     <section className='lg:px-24 pt-14 p-4'>
             <h4 className='text-4xl font-bold text-secondary text-center'>History</h4>
@@ -19,7 +30,7 @@ At MacJhons, we are dedicated to nurturing talent, fostering growth, and shaping
 </p>
                 </div>
                 <div className='lg:w-1/2'>
-                <img className="rounded-xl max-lg:mt-5" src="https://mjpl.co.in/about/testimonial.JPG" alt="" />
+                <img className="rounded-xl max-lg:mt-5" src={banner?.blog0_images} alt="" />
                 </div>
             </div>
             <hr className='border-secondary w-1/3 mx-auto my-14' />
@@ -32,7 +43,7 @@ By fostering a culture of discipline, perseverance, and excellence, we aim to co
 </p>
                 </div>
                 <div className='lg:w-1/3 max-lg:mt-5'>
-                <img className="rounded-xl" src={API_URL+ "banner/About-MJPL-Mission.jpg"} alt="" />
+                <img className="rounded-xl" src={banner?.blog1_images} alt="" />
                 </div>
             </div>
             <hr className='border-secondary w-1/3 mx-auto my-14' />
@@ -60,7 +71,7 @@ By fostering a culture of discipline, perseverance, and excellence, we aim to co
                 </p>
                 </div>
                 <div className='lg:w-1/3 max-lg:mt-5'>
-                <img className="rounded-xl" src={API_URL+"banner/About-MJPL-Vision.jpg"} alt="" />
+                <img className="rounded-xl" src={banner?.blog2_images} alt="" />
                 </div>
             </div>
             <hr className='border-secondary w-1/3 mx-auto my-14' />
@@ -78,7 +89,7 @@ By fostering a culture of discipline, perseverance, and excellence, we aim to co
              
                 </div>
                 <div className='lg:w-1/3 max-lg:mt-5'>
-                <img className="rounded-xl" src={API_URL+"banner/About-MJPL.jpg"} alt="" />
+                <img className="rounded-xl" src={banner?.blog3_images} alt="" />
                 </div>
             </div>
     </section>

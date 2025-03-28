@@ -3,6 +3,7 @@ import logo from "../assets/logo.png"
 import LabelInputBox from '../utils/LabelInputBox'
 import { addDoc, collection, getDocs, query, serverTimestamp, where } from 'firebase/firestore'
 import { db } from '../firebaseConfig'
+import axios from "axios"
 
 function RegisterMember() {
     const [active, setActive] = useState(0)
@@ -11,7 +12,7 @@ function RegisterMember() {
     const [formdata, setFormData] = useState({
         first_name: "",
         middle_name: "",
-        last_name: "",
+        last_name: "",  
         date_of_birth: "",
         pofile_img: "",
         gender: "",
@@ -61,22 +62,63 @@ function RegisterMember() {
                 return
             }
         }
+        if(active==1){
+           await handlePayment()
+            return
+        }
         setActive(active + 1)
-        if (active < 2) {
+        if (active < 1) {
             return
         }
         try {
-
             setLoading(true)
             const userRef = collection(db, "users")
             await addDoc(userRef, {...formdata, createdAt:serverTimestamp()})
             setLoading(false)
             setActive(3)
         } catch (error) {
-            console.log(error);
             setLoading(false)
         }
     }
+
+    const handlePayment = async () => {
+       try {
+        const response = await axios.post("https://api-iibgbkbzsa-uc.a.run.app/api/mjpl-payment/create-order", {
+                amount:1999,
+                name: formdata.first_name+ " " + formdata.last_name,
+                email:formdata.email,
+                contact: formdata.mobile_number,
+          });
+        const order = response.data;
+      
+          const options = {
+            key: order.key,
+            amount: order.amount,
+            currency: order.currency,
+            name: order.name,
+            description: order.description,
+            order_id: order.orderId,
+            handler: function (response) {
+            //   window.location.href ="http://localhost:5173/thank-page";
+            setActive(2)
+            },
+            prefill: order.prefill,
+            theme: { color: "#3399cc" },
+            modal: {
+              escape: false,
+              ondismiss: function () {
+                setActive(2)
+              },
+            },
+          };
+          const rzp = new window.Razorpay(options);
+          rzp.open();
+       } catch (error) {
+        console.log("error", error);
+        
+       }
+      };
+    
     
     return (
         <section className='fixed overflow-auto z-50 w-full h-full left-0 top-0 bg-black/50'>
@@ -148,14 +190,8 @@ function RegisterMember() {
                                 <input disabled={loading} type="submit" value={"Payment"} className='bg-secondary text-white w-full lg:w-5/12  mt-10 py-2.5 border border-secondary hover:bg-transparent hover:text-secondary duration-500 cursor-pointer rounded-lg' />
                             </div>
                         </form>
-                    </section> : active == 2 ?
-                        <section className='grid'>
-                            <h3 className='mt-5 py-2 px-4 bg-primary text-white font-bold border-t-8 border-secondary'>Pay Here</h3>
-                            <img className=" max-w-sm mt-5 mx-auto" src={API_URL + "about/qr-code.jpg"} alt="" />
-                            <button disabled={loading} className='bg-secondary text-white w-full lg:w-5/12 mx-auto mt-10 py-2.5 border border-secondary hover:bg-transparent hover:text-secondary duration-500 cursor-pointer rounded-lg' onClick={(e) => hanldeSubmit(e)}>
-                                {loading ? "Payment Verifing..." : "Click here after completing the payment"}
-                            </button>
-                        </section> : <section>
+                    </section> : 
+                        <section>
                             <h3 className='mt-5 py-2 px-4 bg-primary text-white font-bold border-t-8 border-secondary'>Payment Information</h3>
 
                             <h3 className='text-3xl text-secondary font-bold text-center my-8'>Thank you

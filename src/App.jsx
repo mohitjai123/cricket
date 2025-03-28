@@ -23,6 +23,7 @@ import Profile from './pages/Profile';
 import Notifications from './pages/Notifications';
 import Registration from './pages/Registration';
 import ChangePassword from './pages/ChangePassword';
+import ThankYou from './pages/ThankYou';
 
 function App() {
 
@@ -54,6 +55,7 @@ function App() {
                <Route path='/notifications' element={<Notifications />} />
                <Route path='/registrations' element={<Registration />} />
                <Route path='/change-password' element={<ChangePassword />} />
+               <Route path='/thank-you' element={<ThankYou />} />
             </Route>
          </Routes>
          </RecoilRoot>

@@ -2,16 +2,15 @@ import { collection, getDocs, query, where } from 'firebase/firestore';
 import React, { useEffect, useState } from 'react'
 import { Link } from 'react-router-dom'
 import { db } from '../firebaseConfig';
-import { convertTimestamp } from '../utils/convertTimeStamp';
+import { convertTimestamp, sortByTime } from '../utils/convertTimeStamp';
 
 function BlogsNews() {
     const [data, setData] = useState([])
-    const pageName = window.location.toString().includes("about") ? "Academy" : "Clubs"
     const fetchData = async () => {
         const newsQuery = query(collection(db, "news"));
         const queryShot = await getDocs(newsQuery)
         const docs = queryShot.docs.map((item) => ({ id: item.id, ...item.data() }))
-        setData(docs)
+        setData(sortByTime(docs))
     }
     useEffect(() => {
         fetchData()
@@ -34,7 +33,13 @@ function BlogsNews() {
                  </div>
                  </Link>
                 )}
-             
+            </div>
+            <div className='flex'>
+            {data.length>3 ?
+                <Link className='mx-auto bg-secondary text-white px-8 py-2 rounded-lg border hover:bg-white hover:text-secondary border-secondary duration-300' to="/news">
+                    View All
+                </Link> : null
+            }
             </div>
         </section>
     )

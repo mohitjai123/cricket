@@ -1,7 +1,7 @@
-import React, { act, useRef, useState } from 'react'
+import React, { act, useEffect, useRef, useState } from 'react'
 import logo from "../assets/logo.png"
 import LabelInputBox from '../utils/LabelInputBox'
-import { addDoc, collection, getDocs, query, serverTimestamp, where } from 'firebase/firestore'
+import { addDoc, collection, doc, getDoc, getDocs, query, serverTimestamp, where } from 'firebase/firestore'
 import { db } from '../firebaseConfig'
 import axios from "axios"
 
@@ -9,10 +9,11 @@ function RegisterMember() {
     const [active, setActive] = useState(0)
     const [policy, setPolicy] = useState(false)
     const setPopup = useSetRecoilState(popupAtom)
+    const [verify, setVerify] = useState("Verify")
     const [formdata, setFormData] = useState({
         first_name: "",
         middle_name: "",
-        last_name: "",  
+        last_name: "",
         date_of_birth: "",
         pofile_img: "",
         gender: "",
@@ -36,90 +37,133 @@ function RegisterMember() {
         setFormData((prev) => ({ ...prev, [e.target.name]: e.target.value }))
     }
     function handleCancel() {
-        if (active < 3) {
+        if (active < 2) {
             const value = confirm("Arey you sure you want to cancel registration.").valueOf()
             if (value) {
                 setPopup()
             }
         } else {
-            setPopup()
+            window.location.reload()
+            // setPopup()
         }
 
     }
     const hanldeSubmit = async (e) => {
         e?.preventDefault()
+        console.log(active);
         if (active == 0) {
             setLoading(true)
             const queryShot = query(collection(db, "users"), where("mobile_number", "==", formdata.mobile_number))
             const shot = await getDocs(queryShot)
             if (shot.empty) {
-                setActive(active + 1)
-                setLoading(false)
-                return
+                if(verify.includes("ed")){
+                    setActive(active + 1)
+                    setLoading(false)
+                    return
+                } else {
+                    alert("Please verify mobile number.")
+                    setLoading(false)
+                    return
+                }
             } else {
                 alert("Mobile number already register with us.")
                 setLoading(false)
                 return
             }
+           
+           
         }
-        if(active==1){
-           await handlePayment()
-            return
+        if (active == 1) {
+                await handlePayment()
         }
         setActive(active + 1)
-        if (active < 1) {
-            return
-        }
-        try {
-            setLoading(true)
-            const userRef = collection(db, "users")
-            await addDoc(userRef, {...formdata, createdAt:serverTimestamp()})
-            setLoading(false)
-            setActive(3)
-        } catch (error) {
-            setLoading(false)
-        }
     }
-
+   
+    const [cardDetails, setCardDetails] = useState({})
+    const saveDetails = async (payment) => {
+        try {
+            setLoading(true);
+    
+            // 1️⃣ Add User to "users" collection
+            const userRef = await addDoc(collection(db, "users"), { 
+                ...formdata, 
+                createdAt: serverTimestamp(),
+            });
+    
+            // 2️⃣ Save user ID locally
+            localStorage.setItem("user_id", userRef.id);
+            localStorage.setItem("user_data", JSON.stringify({ first_name: formdata.first_name }));
+    
+            // 3️⃣ Reference to the "registrationDetails" subcollection
+            const registerRef = collection(db, "users", userRef.id, "registration"); 
+            
+            // 4️⃣ Add registration details to the subcollection
+            await addDoc(registerRef, { 
+                ...payment, 
+                amount: cardDetails.price, 
+                createdAt: serverTimestamp(), 
+                season: cardDetails?.title, 
+                result: "Pending", 
+            });
+    
+            console.log("Registration Details Saved");
+    
+            setLoading(false);
+            setActive(2);
+        } catch (error) {
+            setLoading(false);
+            console.error("🔥 Error saving details:", error);
+        }
+    };
+    
+    
+    const getRegistrationData = async ()=>{
+        const refDoc = doc(db, "trailPage", "trail_subscription")
+        const shot = await getDoc(refDoc)
+        setCardDetails(shot.data()) 
+    }
+    
+    useEffect(()=>{
+        getRegistrationData()
+    },[])
     const handlePayment = async () => {
-       try {
-        const response = await axios.post("https://api-iibgbkbzsa-uc.a.run.app/api/mjpl-payment/create-order", {
-                amount:1999,
-                name: formdata.first_name+ " " + formdata.last_name,
-                email:formdata.email,
+        try {
+            const response = await axios.post("https://api-iibgbkbzsa-uc.a.run.app/api/mjpl-payment/create-order", {
+                amount: cardDetails.price,
+                name: formdata.first_name + " " + formdata.last_name,
+                email: formdata.email,
                 contact: formdata.mobile_number,
-          });
-        const order = response.data;
-      
-          const options = {
-            key: order.key,
-            amount: order.amount,
-            currency: order.currency,
-            name: order.name,
-            description: order.description,
-            order_id: order.orderId,
-            handler: function (response) {
-            //   window.location.href ="http://localhost:5173/thank-page";
-            setActive(2)
-            },
-            prefill: order.prefill,
-            theme: { color: "#3399cc" },
-            modal: {
-              escape: false,
-              ondismiss: function () {
-                setActive(2)
-              },
-            },
-          };
-          const rzp = new window.Razorpay(options);
-          rzp.open();
-       } catch (error) {
-        console.log("error", error);
-        
-       }
-      };
-    
-    
+            });
+            const order = response.data;
+            const options = {
+                key: order.key,
+                amount: order.amount,
+                currency: order.currency,
+                name: order.name,
+                description: order.description,
+                order_id: order.orderId,
+                handler: async function (response) {
+                    await saveDetails({status:"success", orderId:order.orderId})
+                    await paymentSuccess(formdata.mobile_number, order.orderId)
+                },
+                prefill: order.prefill,
+                theme: { color: "#3399cc" },
+                modal: {
+                    escape: false,
+                    ondismiss: async function () {
+                        await saveDetails({status:"cancel", orderId:order.orderId})
+                        await paymentFailed(formdata.mobile_number, order.orderId)
+                    },
+                },
+            };
+            const rzp = new window.Razorpay(options);
+            rzp.open();
+        } catch (error) {
+            console.log("error", error);
+        }
+    };
+
+
     return (
         <section className='fixed overflow-auto z-50 w-full h-full left-0 top-0 bg-black/50'>
             <div className='lg:w-9/12 max-lg:mx-3 lg:p-8 p-3 my-8 bg-white m-auto rounded-lg overflow-hidden'>
@@ -137,7 +181,7 @@ function RegisterMember() {
                             <LabelInputBox required={false} onChange={handleChange} value={formdata.middle_name} label="Middle name" placeholder='Please type your middle name' name='middle_name' />
                             <LabelInputBox onChange={handleChange} value={formdata.last_name} label="Last name" placeholder='Please type your last name' name='last_name' />
                             <LabelInputBox onChange={handleChange} value={formdata.date_of_birth} label="Date of Birth" placeholder='Please select date' name='date_of_birth' type='date' />
-                            <PasswordInputBox onChange={handleChange} label="Create Password" placeholder='Please type your password' name='password'/>
+                            <PasswordInputBox onChange={handleChange} label="Create Password" placeholder='Please type your password' name='password' />
                             <LabelInputBox onChange={handleChange} value={formdata.gender} label="Gender" placeholder='Please select your gender ' name='gender' option={["Male", "Female", "Other"]} />
 
                         </div>
@@ -146,14 +190,13 @@ function RegisterMember() {
                             Contact Details
                         </h4>
                         <div className='grid mt-8 gap-x-10 gap-y-5 lg:grid-cols-3 md:grid-cols-2 grid-cols-1'>
-                            <LabelInputBox onChange={(e) => e.target.value.length < 11 ? handleChange(e) : null} value={formdata.mobile_number} label="Mobile Number" type='number' placeholder='Please type your mobile number' name='mobile_number' />
-
+                            <MobileNumber verify={verify} setVerify={setVerify} onChange={(e) => e.target.value.length < 11 ? handleChange(e) : null} value={formdata.mobile_number} label="Mobile Number" type='number' placeholder='Please type your mobile number' name='mobile_number' />
                             <LabelInputBox onChange={handleChange} value={formdata.email} label="Email Id" type='email' placeholder='Please type your email id' name='email' />
                             <LabelInputBox onChange={handleChange} value={formdata.address} label="Address" placeholder='Please type your address' name='address' />
                         </div>
                         <div className='grid mt-8 gap-x-10 gap-y-5 lg:grid-cols-3 md:grid-cols-2 grid-cols-1'>
 
-                            <LabelInputBox onChange={handleChange} value={formdata.city} label="City" placeholder='Please type your city' name='city' />
+                           <LabelInputBox onChange={handleChange} value={formdata.city} label="City" placeholder='Please type your city' name='city' />
                             <LabelInputBox onChange={handleChange} value={formdata.state} label="State" placeholder='Please type your state' name='state' />
 
                             <LabelInputBox onChange={(e) => e.target.value.length < 7 ? handleChange(e) : null} value={formdata.pincode} label="Pincode" placeholder='Please type your pincode' type='number' name='pincode' />
@@ -178,7 +221,7 @@ function RegisterMember() {
                         <form ref={policyFormRef} className='grid' onSubmit={(e) => hanldeSubmit(e)}>
                             <div className='flex justify-center my-5 mt-10 flex-wrap gap-5'>
 
-                                <PlanCard item={{ name: "MJPL SEASON 1", price: "1999" }} idx />
+                                <PlanCard item={cardDetails} idx />
                             </div>
                             <div className='flex px-2 lg:px-20 gap-2 text-secondary mt-2'>
                                 <input className='h-5' required name='policy' id='policy' type="checkbox" checked={policy} onChange={(e) => setPolicy(e.target.checked)} />
@@ -187,16 +230,14 @@ function RegisterMember() {
                             </div>
                             <div className='flex flex-wrap gap-5 items-center justify-center'>
                                 <button onClick={() => setActive(0)} className='h-fit py-2.5 w-full lg:w-5/12  rounded-lg hover:bg-transparent hover:text-primary duration-300 border hover:border-primary mt-10 bg-primary text-white'>Edit Form Data</button>
-                                <input disabled={loading} type="submit" value={"Payment"} className='bg-secondary text-white w-full lg:w-5/12  mt-10 py-2.5 border border-secondary hover:bg-transparent hover:text-secondary duration-500 cursor-pointer rounded-lg' />
+                                <input disabled={loading} type="submit" value={loading ? "Please wait..." : "Payment"} className='bg-secondary text-white w-full lg:w-5/12  mt-10 py-2.5 border border-secondary hover:bg-transparent hover:text-secondary duration-500 cursor-pointer rounded-lg' />
                             </div>
                         </form>
-                    </section> : 
+                    </section> :
                         <section>
                             <h3 className='mt-5 py-2 px-4 bg-primary text-white font-bold border-t-8 border-secondary'>Payment Information</h3>
 
-                            <h3 className='text-3xl text-secondary font-bold text-center my-8'>Thank you
-                                <br />
-                                <span className='text-lg'>for completing your payment.</span>
+                            <h3 className='text-3xl text-secondary font-bold text-center my-8'>Thank you 
                                 <br />
                                 <span className='text-lg font-normal'>Your registration is almost complete!</span>
                             </h3>
@@ -211,7 +252,7 @@ function RegisterMember() {
                             <div className='text-center mt-5 mx-auto grid-cols-2'>
                                 <h3 className='font-bold text-lg'> -: Important Notes  :-</h3>
                                 <p className='text-center mt-2 mx-auto'>If, any case, you don't receive a confirmation, please reach out to us at <a className='text-secondary font-bold underline' href="tel:+917021612227">+917021612227</a>. </p>
-                                <p className='text-center mt-2 mx-auto'>Payment made after 9:00 PM will be processed the next morning.</p>
+                                {/* <p className='text-center mt-2 mx-auto'>Payment made after 9:00 PM will be processed the next morning.</p> */}
                             </div>
                         </section>
                 }
@@ -224,6 +265,8 @@ import { motion } from "framer-motion";
 import { useSetRecoilState } from 'recoil'
 import { popupAtom } from '../utils/popupAtom'
 import { API_URL } from '../stor'
+import { paymentFailed, paymentSuccess, resetPasswordOTP, sendOTP } from '../utils/SMSPanel'
+import MobileNumber from '../utils/MobileNumber'
 
 function PlanCard({ item, payNow }) {
     return (
@@ -246,7 +289,7 @@ function PlanCard({ item, payNow }) {
                     Take the First Step Towards Success!
                 </motion.div>
                 {/* Plan Name */}
-                <h2 className="text-4xl font-bold text-center">{item.name}</h2>
+                <h2 className="text-4xl font-bold text-center">{item.title}</h2>
 
                 <p className=' text-xl mt-4'>
                     Trial Registration
@@ -256,7 +299,7 @@ function PlanCard({ item, payNow }) {
                 <div className="text-center my-4">
                     <span className="text-3xl font-extrabold">RS. {item.price}</span>
                 </div>
-                <p className='font-light'>Pay Now to Register for Your Trials and Unlock Your Path to Vitory!</p>
+                <p className='font-light'>{item.description}</p>
                 {/* Features */}
 
                 {/* CTA Button */}

@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react'
 import { collection, getDocs, query } from 'firebase/firestore';
 import { db } from '../firebaseConfig';
-import { convertTimestamp } from '../utils/convertTimeStamp';
+import { convertTimestamp, sortByTime } from '../utils/convertTimeStamp';
 import { Link } from 'react-router-dom';
 
 function NewsPage() {
@@ -11,7 +11,7 @@ function NewsPage() {
         const newsQuery = collection(db, "news");
         const queryShot = await getDocs(newsQuery)
         const docs = queryShot.docs.map((item) => ({ id: item.id, ...item.data() }))
-        setData(docs)
+        setData(sortByTime(docs))
     }
     useEffect(() => {
         fetchData()

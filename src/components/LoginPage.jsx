@@ -3,6 +3,7 @@ import logo from "../assets/logo.png"
 import LabelInputBox from '../utils/LabelInputBox'
 import { addDoc, collection, doc, getDocs, query, updateDoc, where } from 'firebase/firestore'
 import { db } from '../firebaseConfig'
+import { resetPasswordOTP } from '../utils/SMSPanel'
 
 function LoginPage({ setPopup }) {
     const [active, setActive] = useState(1)
@@ -64,8 +65,8 @@ function LoginPage({ setPopup }) {
         try {
             setLoading(true)
             const isRegister = await checkUserRegister()
-            console.log(isRegister);
             if (isRegister) {
+                resetPasswordOTP(formdata.mobile_number)
                 alert("OTP send successfully.")
                 setActive(3)
             } else {

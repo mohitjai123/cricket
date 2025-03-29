@@ -15,7 +15,6 @@ function UpcomingEvent() {
     try {
       const querySnapshot = await getDocs(collection(db, "events"));
       const docs = querySnapshot.docs.map((item)=>({...item.data()}))
-      console.log(docs);
       setData(docs?.[0]); 
     } catch (error) {
       console.error("Error fetching data:", error);

@@ -29,7 +29,7 @@ function InstaNews() {
     <section className='flex justify-center bg-[#f8f8f7] pt-14 max-lg:flex-wrap'>
 
         {data.slice(0,6).map((item,idx)=>
-          <a key={idx} href={item} data-fancybox="gallery">
+          <a key={idx} href={item.image} data-fancybox="gallery">
           <img className='xl:max-w-56 duration-300 hover:brightness-90' src={item.image} alt="" />
           </a>
         )}

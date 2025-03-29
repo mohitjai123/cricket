@@ -10,8 +10,6 @@ function OurTradingTeams() {
       const teamRef = collection(db, "teams")
       const teamsDat = await getDocs(teamRef)
       const formatData = teamsDat.docs.map(doc=>({id:doc.id, ...doc.data()}))
-      console.log(formatData);
-      
       setTeams(formatData)
     }
     useEffect(()=>{

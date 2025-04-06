@@ -57,12 +57,12 @@ function ChangePassword() {
     return (
         <main className='lg:px-24 py-10 p-4'>
             <h4 className='border-t-4 py-3 font-semibold px-5 text-xl border-secondary bg-primary text-white'>Change Password</h4>
-            <form onSubmit={hanldeSubmit} className='mt-5 grid md:grid-cols-2 lg:grid-cols-3 gap-10'>
+            <form onSubmit={hanldeSubmit} className='mt-5 md:grid md:grid-cols-2 lg:grid-cols-3 gap-10'>
                 <PasswordInputBox onChange={handleChange} label="Current Password" name='currentPassword' placeholder='Enter your current password' value={formdata.currentPassword} />
                 <PasswordInputBox onChange={handleChange} name='newPassword' label="New Password" placeholder='Enter your new password' value={formdata.newPassword} />
                 <PasswordInputBox name='confirmPassword' onChange={handleChange} label="Confirm Password" placeholder='Re-enter your new password' value={formdata.confirmPassword} />
 
-                <input disabled={loading} type="submit" value={loading ? "Saving ..." : "Save"} className='bg-secondary text-white w-full py-2.5 border border-secondary hover:bg-transparent col-start-2 hover:text-secondary duration-500 cursor-pointer rounded-lg' />
+                <input disabled={loading} type="submit" value={loading ? "Saving ..." : "Save"} className='bg-secondary text-white w-full py-2.5 border border-secondary max-md:mt-5 hover:bg-transparent col-start-2 hover:text-secondary duration-500 cursor-pointer rounded-lg' />
 
             </form>
         </main>
@@ -72,7 +72,7 @@ function ChangePassword() {
 function PasswordInputBox({ placeholder = "", name = "", required = true, label, value, onChange }) {
     const [show, setShow] = useState(false)
     return (
-        <div className='relative w-full'>
+        <div className='relative max-md:mt-5 w-full'>
             <div className='text-gray-600'>
                 <label htmlFor={name}>{label}</label>
             </div>

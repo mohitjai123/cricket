@@ -23,26 +23,32 @@ function PointTable() {
             <h4 className='bg-primary p-5 font-semibold text-white text-lg'>
             Team standing
             </h4>
-            <div className='border-collapse flex'>
-                <h2 className='p-5 w-fit font-semibold border'>Pos</h2>
-                <h2 className='p-5 w-1/2 max-lg:w-1/4 font-semibold border'>Team</h2>
-                <h2 className='p-5 lg:w-1/6 text-center font-semibold border'>E</h2>
-                <h2 className='p-5 lg:w-1/6 text-center font-semibold border'>W</h2>
-                <h2 className='p-5 lg:w-1/6 text-center font-semibold border'>L</h2>
-                <h2 className='p-5 lg:w-1/6 text-center font-semibold border'>P</h2>
-            </div>
+            <table className='w-full'>
+            <thead>
+            <tr className='border-collapse'>
+                <th className='lg:p-5 p-2 w-20 font-semibold border'>Pos</th>
+                <th className='lg:p-5 p-2 font-semibold border'>Team</th>
+                <th className='lg:p-5 p-2 text-center font-semibold border'>E</th>
+                <th className='lg:p-5 p-2 text-center font-semibold border'>W</th>
+                <th className='lg:p-5 p-2 text-center font-semibold border'>L</th>
+                <th className='lg:p-5 p-2 text-center font-semibold border'>P</th>
+            </tr>
+            </thead>
+            <tbody>
             {data?.map((item, idx)=>
-            <div key={idx} className='border-collapse hover:bg-cyan-50 duration-500 bg-white flex'>
-            <h2 className='py-5 text-center w-1/6 lg:w-[5.5rem] text-gray-500 border'>{idx+1}</h2>
-            <div className='p-5 lg:w-1/2 w-1/4 lg:flex gap-4 items-center text-secondary hover:font-semibold duration-500 border'><img className='h-8' src={item.logo} alt="" />
-                <h4>{item.teamName}</h4>
-            </div>
-            <h2 className='p-5 lg:w-1/6 text-center text-gray-500 border'>{item.ennings}</h2>
-            <h2 className='p-5 lg:w-1/6 text-center text-gray-500 border'>{item.winings}</h2>
-            <h2 className='p-5 lg:w-1/6 text-center text-gray-500 border'>{item.loss}</h2>
-            <h2 className='p-5 lg:w-1/6 text-center text-gray-500 border'>{item.points}</h2>
-        </div>
+            <tr key={idx} className='border-collapse hover:bg-cyan-50 duration-500 bg-white'>
+            <td className='py-5 text-center w-20 text-gray-500 border'>{idx+1}</td>
+            <td className='lg:p-5 p-2 lg:flex gap-4 items-center text-secondary hover:font-semibold duration-500 border'><img className='h-8' src={item.logo} alt="" />
+                <a>{item.teamName}</a>
+            </td>
+            <td className='lg:p-5 p-2 text-center text-gray-500 border'>{item.ennings}</td>
+            <td className='lg:p-5 p-2 text-center text-gray-500 border'>{item.winings}</td>
+            <td className='lg:p-5 p-2 text-center text-gray-500 border'>{item.loss}</td>
+            <td className='lg:p-5 p-2 text-center text-gray-500 border'>{item.points}</td>
+        </tr>
             )}
+            </tbody>
+            </table>
         </div>
         {/* <button className='mx-auto text-white bg-secondary mt-8 py-3 px-5 rounded-full hover:bg-blue-600 duration-500 w-fit'>VIEW FULL TABLE</button> */}
     </section>

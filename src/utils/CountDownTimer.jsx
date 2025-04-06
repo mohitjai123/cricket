@@ -1,6 +1,7 @@
 import { useState, useEffect } from "react";
 import { useSetRecoilState } from "recoil";
 import { popupAtom } from "./popupAtom";
+import { Link } from "react-router-dom";
 
 export default function CountdownTimer({ dateAndTime }) {
   const targetDate = new Date(dateAndTime || "March 10, 2025 19:30:00").getTime();
@@ -47,12 +48,12 @@ export default function CountdownTimer({ dateAndTime }) {
         </div>
       )}
 
-      <button
-        onClick={() => setPopup(true)}
+      <Link
+        to="/registration-now"
         className="bg-white text-primary hover:text-white hover:bg-transparent border rounded-full mt-5 px-8 py-2 font-bold duration-300"
       >
         Register Now
-      </button>
+      </Link>
     </div>
   );
 }

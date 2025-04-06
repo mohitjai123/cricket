@@ -19,7 +19,7 @@ function Notifications() {
         setLoading(true)
         const docRef = collection(db, "users", userId, "notifications")
         const shot = await getDocs(docRef)
-        const dat = shot.docs.map(item => ({ ...item.data() }))
+        const dat = shot.docs.map(item => ({ title: item.data().type, description: item.data().message, createdAt: item.data().timestamp }))
         const publiC = collection(db, "PublicNotifiction")
         const shotRef = await getDocs(publiC)
         const notifyDat = shotRef.docs.map((item) => ({ title: item.data().type, description: item.data().message, createdAt: item.data().timestamp }))
@@ -28,6 +28,8 @@ function Notifications() {
         setData(sortNotify)
        } catch (error) {
         setLoading(false)
+        console.log(error);
+        
        }
     }
 

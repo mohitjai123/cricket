@@ -83,7 +83,9 @@ function LoginPage({ setPopup }) {
         e.preventDefault()
         try {
             setLoading(true)
-            if (formdata.mobile_number.slice(0, 4) == formdata.otp) {
+
+            const otp = localStorage.getItem("otp")            
+            if (otp == formdata.otp) {
                 alert("OTP verified successfully.")
                 setActive(4)
             } else {

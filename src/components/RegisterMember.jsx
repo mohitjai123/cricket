@@ -15,7 +15,6 @@ function RegisterMember() {
         middle_name: "",
         last_name: "",
         date_of_birth: "",
-        pofile_img: "",
         gender: "",
         mobile_number: "",
         email: "",
@@ -36,28 +35,22 @@ function RegisterMember() {
     const handleChange = (e) => {
         setFormData((prev) => ({ ...prev, [e.target.name]: e.target.value }))
     }
-    function handleCancel() {
-        if (active < 2) {
-            const value = confirm("Arey you sure you want to cancel registration.").valueOf()
-            if (value) {
-                setPopup()
-            }
-        } else {
-            window.location.reload()
-            // setPopup()
-        }
-
-    }
     const hanldeSubmit = async (e) => {
         e?.preventDefault()
-        console.log(active);
+        setLoading(true)
         if (active == 0) {
-            setLoading(true)
             const queryShot = query(collection(db, "users"), where("mobile_number", "==", formdata.mobile_number))
-            const shot = await getDocs(queryShot)
+             const shot = await getDocs(queryShot)
             if (shot.empty) {
                 if(verify.includes("ed")){
                     setActive(active + 1)
+                    const userRef = await addDoc(collection(db, "users"), { 
+                        ...formdata, 
+                        createdAt: serverTimestamp(),
+                    });
+                    setFormData((prev)=>({...prev, userId:userRef.id}))
+                    localStorage.setItem("user_id", userRef.id);
+                    localStorage.setItem("user_data", JSON.stringify({ first_name: formdata.first_name }));        
                     setLoading(false)
                     return
                 } else {
@@ -70,8 +63,6 @@ function RegisterMember() {
                 setLoading(false)
                 return
             }
-           
-           
         }
         if (active == 1) {
                 await handlePayment()
@@ -83,21 +74,7 @@ function RegisterMember() {
     const saveDetails = async (payment) => {
         try {
             setLoading(true);
-    
-            // 1️⃣ Add User to "users" collection
-            const userRef = await addDoc(collection(db, "users"), { 
-                ...formdata, 
-                createdAt: serverTimestamp(),
-            });
-    
-            // 2️⃣ Save user ID locally
-            localStorage.setItem("user_id", userRef.id);
-            localStorage.setItem("user_data", JSON.stringify({ first_name: formdata.first_name }));
-    
-            // 3️⃣ Reference to the "registrationDetails" subcollection
-            const registerRef = collection(db, "users", userRef.id, "registration"); 
-            
-            // 4️⃣ Add registration details to the subcollection
+            const registerRef = collection(db, "users", formdata.userId, "registration"); 
             await addDoc(registerRef, { 
                 ...payment, 
                 amount: cardDetails.price, 
@@ -105,22 +82,18 @@ function RegisterMember() {
                 season: cardDetails?.title, 
                 result: "Pending", 
             });
-    
-            console.log("Registration Details Saved");
-    
             setLoading(false);
             setActive(2);
+            fbq('track', 'CompleteRegistration')
         } catch (error) {
             setLoading(false);
             console.error("🔥 Error saving details:", error);
         }
     };
-    
-    
     const getRegistrationData = async ()=>{
         const refDoc = doc(db, "trailPage", "trail_subscription")
         const shot = await getDoc(refDoc)
-        setCardDetails(shot.data()) 
+         setCardDetails(shot.data()) 
     }
     
     useEffect(()=>{
@@ -165,13 +138,10 @@ function RegisterMember() {
 
 
     return (
-        <section className='fixed overflow-auto z-50 w-full h-full left-0 top-0 bg-black/50'>
-            <div className='lg:w-9/12 max-lg:mx-3 lg:p-8 p-3 my-8 bg-white m-auto rounded-lg overflow-hidden'>
-                <button className='float-end' type='button' onClick={handleCancel}><svg xmlns="http://www.w3.org/2000/svg" width="1em" height="1em" viewBox="0 0 24 24"><path fill="none" stroke="currentColor" stroke-linecap="round" stroke-width="2" d="M20 20L4 4m16 0L4 20"></path></svg></button>
-                <img className='h-20 mx-auto' src={logo} alt="" />
-                <h4 className='text-4xl text-center font-semibold my-5'>Register Yourself</h4>
+            <section className='lg:w-11/12 max-lg:mx-3 lg:p-8 p-3 mb-8 bg-white m-auto rounded-lg overflow-hidden'>
                 {active == 0 ?
                     <form onSubmit={hanldeSubmit} className='grid' action="">
+                    <h4 className='text-3xl text-center font-semibold my-5'>Register Yourself</h4>
                         <div className='w-full bg-secondary py-1'></div>
                         <h4 className='bg-primary py-3 px-4 font-semibold text-white'>
                             Personal Details
@@ -190,7 +160,7 @@ function RegisterMember() {
                             Contact Details
                         </h4>
                         <div className='grid mt-8 gap-x-10 gap-y-5 lg:grid-cols-3 md:grid-cols-2 grid-cols-1'>
-                            <MobileNumber verify={verify} setVerify={setVerify} onChange={(e) => e.target.value.length < 11 ? handleChange(e) : null} value={formdata.mobile_number} label="Mobile Number" type='number' placeholder='Please type your mobile number' name='mobile_number' />
+                            <MobileNumber disabled={verify.includes("ed")} verify={verify} setVerify={setVerify} onChange={(e) => e.target.value.length < 11 ? handleChange(e) : null} value={formdata.mobile_number} label="Mobile Number" type='number' placeholder='Please type your mobile number' name='mobile_number' />
                             <LabelInputBox onChange={handleChange} value={formdata.email} label="Email Id" type='email' placeholder='Please type your email id' name='email' />
                             <LabelInputBox onChange={handleChange} value={formdata.address} label="Address" placeholder='Please type your address' name='address' />
                         </div>
@@ -206,16 +176,17 @@ function RegisterMember() {
                             Your Game Skills
                         </h4>
                         <div className='grid mt-8 gap-x-10 gap-y-5 lg:grid-cols-3 md:grid-cols-2 grid-cols-1'>
-                            <LabelInputBox onChange={handleChange} value={formdata.batting_style} label="Batting Style" placeholder='Select your batting style' name='batting_style' option={["Left Handed", "Right Handed", "Both"]} />
-                            <LabelInputBox onChange={handleChange} value={formdata.batting_position} label="Batting Position" placeholder='Select your batting position' name='batting_position' option={["Opener (1,2,3,4)", "Middle order (5,6,7,8)"]} />
-                            <LabelInputBox onChange={handleChange} value={formdata.bowling_arm} label="Bowling Arm" placeholder='Select your bowling arm' name='bowling_arm' option={["Right arm", "Left arm", "Both"]} />
-                            <LabelInputBox onChange={handleChange} value={formdata.bowling_pace} label="Bowling pace" placeholder='Select your bowling pace' name='bowling_pace' option={["Fast", "Medium", "Off-spinner", "Leg-spinner", "China man"]} />
-                            <LabelInputBox onChange={handleChange} value={formdata.wicket_keeper} label="Wicket Keeper" placeholder='Select your wicket keepering' name='wicket_keeper' option={["Full time", "Part time"]} />
-                            <LabelInputBox onChange={handleChange} value={formdata.first_preference} label="All Rounder" placeholder='Select your all-rounder type' name='first_preference' option={["All rounder bowler", "All rounder batter"]} />
+                            <LabelInputBox onChange={handleChange} value={formdata.batting_style} label="Batting Style" placeholder='Select your batting style' name='batting_style' option={["Left Handed", "Right Handed", "Both", "NA"]} />
+                            <LabelInputBox onChange={handleChange} value={formdata.batting_position} label="Batting Position" placeholder='Select your batting position' name='batting_position' option={["Opener (1,2,3,4)", "Middle order (5,6,7,8)", "NA"]} />
+                            <LabelInputBox onChange={handleChange} value={formdata.bowling_arm} label="Bowling Arm" placeholder='Select your bowling arm' name='bowling_arm' option={["Right arm", "Left arm", "Both", "NA"]} />
+                            <LabelInputBox onChange={handleChange} value={formdata.bowling_pace} label="Bowling pace" placeholder='Select your bowling pace' name='bowling_pace' option={["Fast", "Medium", "Off-spinner", "Leg-spinner", "Orthodox", "NA"]} />
+                            <LabelInputBox onChange={handleChange} value={formdata.wicket_keeper} label="Wicket Keeper" placeholder='Select your wicket keepering' name='wicket_keeper' option={["Full time", "Part time", "NA"]} />
+                            <LabelInputBox onChange={handleChange} value={formdata.first_preference} label="All Rounder" placeholder='Select your all-rounder type' name='first_preference' option={["All rounder bowler", "All rounder batter", "NA"]} />
                         </div>
                         <input disabled={loading} type="submit" value={"Next"} className='bg-secondary text-white w-full lg:w-5/12 mx-auto mt-10 py-2.5 border border-secondary hover:bg-transparent hover:text-secondary duration-500 cursor-pointer rounded-lg' />
                     </form> :
                     active == 1 ? <section>
+                    <h4 className='text-3xl text-center font-semibold my-5'>Register Yourself</h4>
                         <h3 className='mt-5 py-2 px-4 bg-primary text-white font-bold border-t-8 border-secondary'>Service Plan</h3>
 
                         <form ref={policyFormRef} className='grid' onSubmit={(e) => hanldeSubmit(e)}>
@@ -226,7 +197,6 @@ function RegisterMember() {
                             <div className='flex px-2 lg:px-20 gap-2 text-secondary mt-2'>
                                 <input className='h-5' required name='policy' id='policy' type="checkbox" checked={policy} onChange={(e) => setPolicy(e.target.checked)} />
                                 <label htmlFor='policy'>By using MJPL, you agree to these <a target='_blank' className='underline hover:no-underline font-bold' href="/terms-conditions">Terms & Conditions</a> and <a target='_blank' className='underline hover:no-underline font-bold' href="/privacy-policy">Privacy Policy.</a></label>
-
                             </div>
                             <div className='flex flex-wrap gap-5 items-center justify-center'>
                                 <button onClick={() => setActive(0)} className='h-fit py-2.5 w-full lg:w-5/12  rounded-lg hover:bg-transparent hover:text-primary duration-300 border hover:border-primary mt-10 bg-primary text-white'>Edit Form Data</button>
@@ -234,39 +204,24 @@ function RegisterMember() {
                             </div>
                         </form>
                     </section> :
-                        <section>
-                            <h3 className='mt-5 py-2 px-4 bg-primary text-white font-bold border-t-8 border-secondary'>Payment Information</h3>
-
-                            <h3 className='text-3xl text-secondary font-bold text-center my-8'>Thank you 
+                        <section className='grid'>
+                            <h3 className='lg:text-3xl text-2xl text-secondary font-bold text-center my-8'>Thank You for Registration. 
                                 <br />
-                                <span className='text-lg font-normal'>Your registration is almost complete!</span>
-                            </h3>
-                            <p className='text-center mx-auto'>Our team will review your details and send you confirmation via WhatsApp or email within 1-2 hours. </p>
-
-                            {/* <div className='text-center mt-5 mx-auto grid-cols-2'>
-                                <h3 className='font-bold text-lg'> -: Login Details  :-</h3>
-                                <p>Phone (Username): <span className='font-semibold'>{formdata.mobile_number}</span></p>
-                                <p>Password: <span className='font-semibold'>{formdata.password}</span></p>
-                                <p className='text-gray-500'>*Please take a screenshot of login crendential. For the further communication</p>
-                            </div> */}
-                            <div className='text-center mt-5 mx-auto grid-cols-2'>
-                                <h3 className='font-bold text-lg'> -: Important Notes  :-</h3>
-                                <p className='text-center mt-2 mx-auto'>If, any case, you don't receive a confirmation, please reach out to us at <a className='text-secondary font-bold underline' href="tel:+917021612227">+917021612227</a>. </p>
-                                {/* <p className='text-center mt-2 mx-auto'>Payment made after 9:00 PM will be processed the next morning.</p> */}
-                            </div>
+                              </h3>
+                             <a href='/profile' className='mx-auto w-fit px-10 bg-secondary text-white py-2 rounded-full'>Close</a>
                         </section>
                 }
-            </div>
-        </section>
+            </section>
+        
     )
 }
 
 import { motion } from "framer-motion";
 import { useSetRecoilState } from 'recoil'
 import { popupAtom } from '../utils/popupAtom'
-import { API_URL } from '../stor'
 import { paymentFailed, paymentSuccess, resetPasswordOTP, sendOTP } from '../utils/SMSPanel'
 import MobileNumber from '../utils/MobileNumber'
+import { Link } from 'react-router-dom'
 
 function PlanCard({ item, payNow }) {
     return (

@@ -28,8 +28,9 @@ function TrialPage() {
         const orderedPhases = Object.keys(phaseShot.data()).map((key) => ({
             phase: key,
             ...phaseShot.data()[key]
-        })).reverse();
-        setphases(orderedPhases)
+        }));
+        const sortedArray = orderedPhases.sort((a,b)=>a.order-b.order)
+        setphases(sortedArray)
 
         const selectionData = dat.find((item) => item.id == "selection_Criteria")
         const selectArray = Object.entries(selectionData)

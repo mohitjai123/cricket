@@ -24,6 +24,7 @@ import Notifications from './pages/Notifications';
 import Registration from './pages/Registration';
 import ChangePassword from './pages/ChangePassword';
 import ThankYou from './pages/ThankYou';
+import RegisterMember from './components/RegisterMember';
 
 function App() {
 
@@ -47,6 +48,7 @@ function App() {
                <Route path='/past-matches/' element={<MatchSection />} />
                <Route path='/news/:name' element={<NewsDetails />} />
                <Route path='/contact-us' element={<ContactUs />} />
+               <Route path='/registration-now' element={<RegisterMember />} />
                <Route path='/privacy-policy' element={<PrivacyPolicy />} />
                <Route path='/terms-conditions' element={<TermsCondition />} />
                <Route path='/refund-policy' element={<RefundPolicy />} />

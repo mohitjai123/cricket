@@ -34,10 +34,24 @@ function Registration() {
             setLoading(false)
         }
     }
+    const [cardDetails, setCardDetails] = useState({})
+    const getRegistrationData = async ()=>{
+        const refDoc = doc(db, "trailPage", "trail_subscription")
+        const shot = await getDoc(refDoc)
+        setCardDetails(shot.data()) 
+    }
+    
+    useEffect(()=>{
+        getRegistrationData()
+    },[])
     const handlePayment = async (index) => {
         try {
+            if(data[index].season!=cardDetails.title){
+                alert(`${data[index].season} registration ended.`)
+                return
+            }
             const response = await axios.post("https://api-iibgbkbzsa-uc.a.run.app/api/mjpl-payment/create-order", {
-                amount: data[index].amount,
+                amount: cardDetails.price,
                 name: formdata.first_name+" "+formdata.last_name,
                 email: formdata.email,
                 contact: formdata.mobile_number,
@@ -78,9 +92,9 @@ function Registration() {
             const registerRef = collection(db, "users",formdata.id, "registration"); 
             await addDoc(registerRef, { 
                 ...payment, 
-                amount:data[index].amount, 
+                amount:cardDetails.price, 
                 createdAt: serverTimestamp(), 
-                season: data[index]?.season, 
+                season: cardDetails.title, 
                 result: "Pending",
             });
             setLoading(false);
@@ -102,9 +116,9 @@ function Registration() {
                         <div className='flex justify-between'>
                         <h3 className='font-semibold text-lg text-secondary'>{item.season}</h3>
                         </div>
-                        <p className='text-gray-600 text-md'>
+                        {/* <p className='text-gray-600 text-md'>
                             <h4 className='text-primary'>Result : <span className="text-secondary">{item.result}</span></h4>
-                        </p>
+                        </p> */}
                         <p className='text-gray-600 text-md'>
                             <h4 className='text-primary'>Transaction Id : <span className="text-secondary">{item.orderId}</span></h4>
                         </p>

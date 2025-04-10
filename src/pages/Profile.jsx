@@ -1,9 +1,7 @@
-import React, { act, useEffect, useRef, useState } from 'react'
-import logo from "../assets/logo.png"
+import React, { useEffect, useState } from 'react'
 import LabelInputBox from '../utils/LabelInputBox'
-import { addDoc, collection, doc, getDoc, getDocs, query, updateDoc, where } from 'firebase/firestore'
+import {doc, getDoc, updateDoc } from 'firebase/firestore'
 import { db } from '../firebaseConfig'
-import axios from 'axios'
 
 function Profile() {
     const [active, setActive] = useState(null)
@@ -57,9 +55,7 @@ function Profile() {
     }, [])
     const fetchDAta = async (id) => {
         const docshot = doc(db, "users", id)
-        const docdata = await getDoc(docshot)
-        console.log(docdata.data());
-        
+        const docdata = await getDoc(docshot)  
         setFormData(docdata.data())
     }
     return (

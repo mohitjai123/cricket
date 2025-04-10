@@ -1,6 +1,8 @@
 import React, { useState } from 'react'
 import logo from "../assets/logo.png"
 import { sendOTP } from './SMSPanel'
+import { collection, getDocs, query, where } from 'firebase/firestore'
+import { db } from '../firebaseConfig'
 
 function MobileNumber({ placeholder = "", setVerify, verify, name = "", required = true, disabled = false, label, value, onChange }) {
     const [show, setShow] = useState(false)
@@ -19,15 +21,22 @@ function MobileNumber({ placeholder = "", setVerify, verify, name = "", required
     }
     const hanldeSend = async () => {
         try {
-            if (verify.includes("ed")) {
-                return
-            }
-            if (value) {
-                await sendOTP(value)
-                setShow(true)
-            } else {
-                alert("Please enter mobile number.")
-            }
+            const queryShot = query(collection(db, "users"), where("mobile_number", "==", value))
+             const shot = await getDocs(queryShot)
+             if(shot.empty){
+                if (verify.includes("ed")) {
+                    return
+                }
+                if (value) {
+                    await sendOTP(value)
+                    setShow(true)
+                } else {
+                    alert("Please enter mobile number.")
+                }
+             } else {
+                alert("Mobile number is already register with us")
+             }
+           
 
         } catch (error) {
             setShow(true)

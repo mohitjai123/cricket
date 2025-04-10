@@ -13,6 +13,7 @@ function Registration() {
         const userId = localStorage.getItem("user_id")
         if(userId){
            fetchDAta(userId)
+           setFormData((prev)=>({...prev, userId}))
         } else {
             window.location.href = "/"
         }
@@ -46,49 +47,49 @@ function Registration() {
     },[])
     const handlePayment = async (index) => {
         try {
-            if(data[index].season!=cardDetails.title){
-                alert(`${data[index].season} registration ended.`)
-                return
+            setLoading(true)
+            if(index){
+                if(data[index].season!=cardDetails.title){
+                    alert(`${data[index].season} registration ended.`)
+                    return
+                }
             }
-            const response = await axios.post("https://api-iibgbkbzsa-uc.a.run.app/api/mjpl-payment/create-order", {
-                amount: cardDetails.price,
-                name: formdata.first_name+" "+formdata.last_name,
-                email: formdata.email,
-                contact: formdata.mobile_number,
-            });
-            const order = response.data;
-            const options = {
-                key: order.key,
-                amount: order.amount,
-                currency: order.currency,
-                name: order.name,
-                description: order.description,
-                order_id: order.orderId,
-                handler: async function (response) {
-                    await saveDetails({status:"success", orderId:order.orderId}, index)
-                    await paymentSuccess(formdata.mobile_number, order.orderId)
-                },
-                prefill: order.prefill,
-                theme: { color: "#3399cc" },
-                modal: {
-                    escape: false,
-                    ondismiss: async function () {
-                        await saveDetails({status:"cancel", orderId:order.orderId}, index)
-                        await paymentFailed(formdata.mobile_number, order.orderId)
+                const response = await axios.post("https://api-iibgbkbzsa-uc.a.run.app/api/mjpl-payment/create-order", {
+                    amount: cardDetails.price,
+                    name: formdata.first_name+" "+formdata.last_name,
+                    email: formdata.email,
+                    contact: formdata.mobile_number,
+                });
+                const order = response.data;
+                const options = {
+                    key: order.key,
+                    amount: order.amount,
+                    currency: order.currency,
+                    name: order.name,
+                    description: order.description,
+                    order_id: order.orderId,
+                    handler: async function (response) {
+                        await saveDetails({status:"success", orderId:order.orderId})
+                        await paymentSuccess(formdata.mobile_number, order.orderId)
                     },
-                },
-            };
-            const rzp = new window.Razorpay(options);
-            rzp.open();
+                    prefill: order.prefill,
+                    theme: { color: "#3399cc" },
+                    modal: {
+                        escape: false,
+                        ondismiss: async function () {
+                            await saveDetails({status:"cancel", orderId:order.orderId})
+                            await paymentFailed(formdata.mobile_number, order.orderId)
+                        },
+                    },
+                };
+                const rzp = new window.Razorpay(options);
+                rzp.open();
         } catch (error) {
             console.log("error", error);
         }
     };
-    const saveDetails = async (payment, index) => {
+    const saveDetails = async (payment) => {
         try {
-            setLoading(true);
-            console.log(formdata.id);
-            
             const registerRef = collection(db, "users",formdata.id, "registration"); 
             await addDoc(registerRef, { 
                 ...payment, 
@@ -97,6 +98,7 @@ function Registration() {
                 season: cardDetails.title, 
                 result: "Pending",
             });
+            window.location.reload()
             setLoading(false);
         } catch (error) {
             setLoading(false);
@@ -106,13 +108,13 @@ function Registration() {
     return (
         <main className='lg:px-24 py-10 p-4'>
             <h4 className='border-t-4 py-3 font-semibold px-5 text-xl border-secondary bg-primary text-white'>Registrations</h4>
-            <section className='mt-5 grid lg:grid-cols-3 md:grid-cols-2 gap-5 flex'>
+            <section className='mt-5 grid lg:grid-cols-3 md:grid-cols-2 gap-5'>
                {loading ? 
                     <h4 className='text-primary w-full text-center border border-primary rounded-md py-1'>
                         Loading...
                     </h4> : data.length ? 
                      data.slice(0.20).map((item, idx) => (
-                        <div key={idx} className='border p-4 grid gap-2 hover:drop-shadow-md shadow rounded-lg p-2'>
+                        <div key={idx} className='border p-4 grid gap-2 hover:drop-shadow-md shadow rounded-lg'>
                         <div className='flex justify-between'>
                         <h3 className='font-semibold text-lg text-secondary'>{item.season}</h3>
                         </div>
@@ -135,7 +137,9 @@ function Registration() {
                     </div>
                     ))  :
                      <h4 className='text-primary w-full text-center border border-primary rounded-md py-1'>
-                        No registration details found.
+                        <span>No registration details found.</span> <br />
+                        <span className='text-secondary font-semibold my-4'>{cardDetails.title} Price: Rs. {cardDetails.price}/-</span> <br />
+                        <button disabled={loading} onClick={()=>handlePayment()} className='py-1.5 px-4 bg-secondary text-white mt-2 rounded-lg border-secondary border'>{loading ?  "Please wait..." : "Rgister for Trial"}</button>
                      </h4>  
             }
 

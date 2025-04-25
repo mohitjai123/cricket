@@ -1,14 +1,13 @@
 import React, { act, useEffect, useRef, useState } from 'react'
 import logo from "../assets/logo.png"
 import LabelInputBox from '../utils/LabelInputBox'
-import { addDoc, collection, doc, getDoc, getDocs, query, serverTimestamp, where } from 'firebase/firestore'
+import { addDoc, collection, doc, getDoc, getDocs, query, serverTimestamp, updateDoc, where } from 'firebase/firestore'
 import { db } from '../firebaseConfig'
 import axios from "axios"
 
 function RegisterMember() {
-    const [active, setActive] = useState(1)
+    const [active, setActive] = useState(0)
     const [policy, setPolicy] = useState(false)
-    const setPopup = useSetRecoilState(popupAtom)
     const [verify, setVerify] = useState("Verify")
     const [formdata, setFormData] = useState({
         first_name: "",
@@ -74,6 +73,15 @@ function RegisterMember() {
                 season: cardDetails?.title,
                 result: "Pending",
             });
+            const docRef = doc(db, "users", formdata.userId)
+            await updateDoc(docRef, {
+                trasaction: {
+                    ...payment,
+                    createdAt: serverTimestamp(),
+                    amount: cardDetails.price,
+                    season: cardDetails?.title,
+                }
+            })
             setLoading(false);
             setActive(2);
             fbq('track', 'CompleteRegistration')

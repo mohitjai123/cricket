@@ -23,7 +23,7 @@ function MobileNumber({ placeholder = "", setVerify, verify, name = "", required
         try {
             const queryShot = query(collection(db, "users"), where("mobile_number", "==", value))
              const shot = await getDocs(queryShot)
-             if(shot.empty){
+            if(shot.empty){
                 if (verify.includes("ed")) {
                     return
                 }

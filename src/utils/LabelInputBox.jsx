@@ -5,7 +5,7 @@ function LabelInputBox({ disabled=false, placeholder = "", option = null, name =
     const today = new Date();
 
   // Calculate min and max dates
-  const minDate = new Date(today.getFullYear() - 40, today.getMonth(), today.getDate()) // 40 years ago
+  const minDate = new Date(today.getFullYear() - 45, today.getMonth(), today.getDate()) // 40 years ago
     .toISOString()
     .split("T")[0];
 

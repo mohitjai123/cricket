@@ -1,4 +1,4 @@
-import { addDoc, collection, doc, getDoc, getDocs, serverTimestamp } from 'firebase/firestore'
+import { addDoc, collection, doc, getDoc, getDocs, serverTimestamp, updateDoc } from 'firebase/firestore'
 import React, { useEffect, useState } from 'react'
 import { db } from '../firebaseConfig'
 import { convertDateToFormate, convertDateToTimeStamp } from '../utils/convertTimeStamp'
@@ -98,6 +98,15 @@ function Registration() {
                 season: cardDetails.title, 
                 result: "Pending",
             });
+            const docRef = doc(db, "users", formdata.id)
+            await updateDoc(docRef, {
+                trasaction: {
+                    ...payment,
+                    createdAt: serverTimestamp(),
+                    amount: cardDetails.price,
+                    season: cardDetails?.title,
+                }
+            })
             window.location.reload()
             setLoading(false);
         } catch (error) {
